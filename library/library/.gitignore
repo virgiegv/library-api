@@ -1,4 +1,6 @@
 .env
+.env.test
 .venv
 env/
 venv/
+

@@ -31,4 +31,4 @@ fastapp.add_middleware(
 fastapp.mount(
     '/graphql', GraphQLApp(schema, on_get=make_graphiql_handler())
 )
-fastapp.mount('/', application)
+#fastapp.mount('/', application)

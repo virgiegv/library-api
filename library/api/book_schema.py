@@ -58,6 +58,7 @@ class BookSchema(graphene.ObjectType):
             categories=None,
             editor=None,
             published_date=None,
+            description=None
     ):
 
         params = {}
@@ -74,6 +75,8 @@ class BookSchema(graphene.ObjectType):
             params['editor__icontains'] = editor
         if published_date:
             params['published_date__icontains'] = published_date
+        if description:
+            params['description__icontains'] = description
 
         results = await sync_to_async(cls._get_book)(params)
 

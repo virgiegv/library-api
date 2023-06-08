@@ -1,0 +1,7 @@
+.env
+.venv
+env/
+venv/
+.pytest_cache
+api/.pytest_cache
+api/.coverage

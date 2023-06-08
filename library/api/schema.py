@@ -18,8 +18,9 @@ class BookSchemaType(graphene.ObjectType):
         categories = info.context['categories']
         editor = info.context['editor']
         published_date = info.context['published_date']
+        book_description = info.context['book_description']
 
-        return await BookSchema.get_book(title, subtitle, authors, categories, editor, published_date)
+        return await BookSchema.get_book(title, subtitle, authors, categories, editor, published_date, book_description)
 
 
 class Query(graphene.ObjectType):
@@ -32,6 +33,7 @@ class Query(graphene.ObjectType):
         categories=graphene.String(required=False),
         editor=graphene.String(required=False),
         published_date=graphene.String(required=False),
+        book_description=graphene.String(required=False)
     )
 
     async def resolve_search(
@@ -43,6 +45,7 @@ class Query(graphene.ObjectType):
             categories=None,
             editor=None,
             published_date=None,
+            book_description=None
     ):
         info.context['title'] = title
         info.context['subtitle'] = subtitle
@@ -50,14 +53,15 @@ class Query(graphene.ObjectType):
         info.context['categories'] = categories
         info.context['editor'] = editor
         info.context['published_date'] = published_date
+        info.context['book_description'] = book_description
 
         return BookSchemaType()
 
 
 class CreateBook(graphene.Mutation):
     class Arguments:
-        source = graphene.String()
-        book_id = graphene.String()
+        source = graphene.String(required=True)
+        book_id = graphene.String(required=True)
 
     ok = graphene.Boolean()
     title = graphene.String()
@@ -83,15 +87,13 @@ class CreateBook(graphene.Mutation):
 
 class DeleteBook(graphene.Mutation):
     class Arguments:
-        book_id = graphene.String()
+        book_id = graphene.ID(required=True)
 
     deleted = graphene.Boolean()
 
     async def mutate(root, info, book_id):
         deleted = await sync_to_async(sync_book_delete)(book_id)
         num_deleted = deleted[0]
-        import pdb
-        pdb.set_trace()
 
         return DeleteBook(deleted=(num_deleted != 0))
 
