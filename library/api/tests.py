@@ -2,6 +2,7 @@ from asgiref.sync import sync_to_async
 
 import pytest
 
+from api.external_api_utils import GOOGLE_BOOKS_SOURCE, LOCAL_DB_SOURCE
 from api.models import Author, Category, Book
 from api.test_utils import GrapheneTestClientMixin
 
@@ -75,7 +76,7 @@ class TestSearchBooks(GrapheneTestClientMixin):
 
         assert len(data['search']['results']) > 0
         hp_source = data['search']['results'][0]['source']
-        assert hp_source == 'local'
+        assert hp_source == LOCAL_DB_SOURCE
 
     @pytest.mark.asyncio
     async def test_search_google_books(self, load_test_data):
@@ -86,13 +87,13 @@ class TestSearchBooks(GrapheneTestClientMixin):
 
         assert len(data['search']['results']) > 0
         hp_source = data['search']['results'][0]['source']
-        assert hp_source == 'google'
+        assert hp_source == GOOGLE_BOOKS_SOURCE
 
     @pytest.mark.asyncio
     async def test_add_book(self):
         test_google_id = 'lciEAAAAQBAJ'
 
-        response = await self.create_book_mutation(test_google_id, 'google')
+        response = await self.create_book_mutation(test_google_id, GOOGLE_BOOKS_SOURCE)
         data = response.json().get('data')
 
         assert data['createBook']['ok']
@@ -101,11 +102,11 @@ class TestSearchBooks(GrapheneTestClientMixin):
     async def test_add_repeated_book_fail(self):
         test_google_id = 'lciEAAAAQBAJ'
 
-        response = await self.create_book_mutation(test_google_id, 'google')
+        response = await self.create_book_mutation(test_google_id, GOOGLE_BOOKS_SOURCE)
         data = response.json().get('data')
         assert data['createBook']['ok']
 
-        response = await self.create_book_mutation(test_google_id, 'google')
+        response = await self.create_book_mutation(test_google_id, GOOGLE_BOOKS_SOURCE)
         data = response.json().get('data')
         assert data['createBook'] is None
 

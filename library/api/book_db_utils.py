@@ -1,5 +1,6 @@
 from graphql import GraphQLError
 
+from api.external_api_utils import GOOGLE_BOOKS_SOURCE
 from api.models import Book, Author, Category
 
 
@@ -37,9 +38,9 @@ def sync_book_create(volume_info, source_id):
             'description': volume_info.get('description', ''),
             'image': volume_info.get('imageLinks', {}).get('thumbnail', '')
         }
-        book_exists = Book.objects.filter(original_source='google', original_source_id=source_id).exists()
+        book_exists = Book.objects.filter(original_source=GOOGLE_BOOKS_SOURCE, original_source_id=source_id).exists()
         if not book_exists:
-            params['original_source'] = 'google'
+            params['original_source'] = GOOGLE_BOOKS_SOURCE
             params['original_source_id'] = source_id
             book = Book.objects.create(**params)
             for author in local_authors:

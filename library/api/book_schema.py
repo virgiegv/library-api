@@ -1,7 +1,7 @@
 import graphene
 from asgiref.sync import sync_to_async
 
-from api.external_api_utils import get_google_books_search
+from api.external_api_utils import get_google_books_search, LOCAL_DB_SOURCE, GOOGLE_BOOKS_SOURCE
 from api.models import Book
 
 
@@ -41,7 +41,7 @@ class BookSchema(graphene.ObjectType):
 
             results.append(
                 cls(
-                    source='local', book_id=book.id, title=book.title, subtitle=book.subtitle,
+                    source=LOCAL_DB_SOURCE, book_id=book.id, title=book.title, subtitle=book.subtitle,
                     authors=book_authors, categories=book_categories, editor=book.editor,
                     published_date=book.published_date, image=book.image, description=book.description
                 )
@@ -88,7 +88,7 @@ class BookSchema(graphene.ObjectType):
                 volume_info = item.get('volumeInfo', {})
 
                 book = cls(
-                    source='google',
+                    source=GOOGLE_BOOKS_SOURCE,
                     book_id=item.get('id', None),
                     title=volume_info.get('title', ''),
                     subtitle=volume_info.get('subtitle', ''),

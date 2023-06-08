@@ -5,7 +5,7 @@ from graphql import GraphQLError
 
 from api.book_db_utils import sync_book_delete, sync_book_create
 from api.book_schema import BookSchema
-from api.external_api_utils import get_google_book_by_id
+from api.external_api_utils import get_google_book_by_id, GOOGLE_BOOKS_SOURCE
 
 
 class BookSchemaType(graphene.ObjectType):
@@ -69,7 +69,7 @@ class CreateBook(graphene.Mutation):
 
     async def mutate(root, info, source, book_id):
         book_data = {}
-        if source == 'google':
+        if source == GOOGLE_BOOKS_SOURCE:
             book_data = await get_google_book_by_id(book_id)
 
         volume_info = book_data.get('volumeInfo', {})

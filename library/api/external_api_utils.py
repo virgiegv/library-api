@@ -1,5 +1,8 @@
 import requests
 
+GOOGLE_BOOKS_SOURCE = 'google'
+LOCAL_DB_SOURCE = 'local'
+
 
 async def get_google_books_search(
             title=None,
@@ -21,13 +24,10 @@ async def get_google_books_search(
     search = '+'.join(filtered_fields)
 
     url = f'https://www.googleapis.com/books/v1/volumes?q={search}'
-
-    print('build url:')
-    print(url)
-
     r = requests.get(url)
 
     return r.json()
+
 
 async def get_google_book_by_id(book_id):
     url = f'https://www.googleapis.com/books/v1/volumes/{book_id}'
